@@ -1,0 +1,42 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+/* this for fade in animation start */
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+    /* Animation name, duration, and fill mode */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        /* Start height */
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+/* this for fade in animation end */
+
+/* this for all transition  */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: ease;
+    transition-duration: 0.3s;
+}
+
+/* this for all transition  */
+
+/* this for product card start */
+.product-img-effect {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.product-card:hover .product-img-effect {
+    visibility: visible;
+    opacity: 1;
+}
+/* this for product card end */

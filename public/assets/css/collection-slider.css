@@ -1,0 +1,29 @@
+.owl-collection-carousel {
+    position: relative;
+}
+.owl-collection-carousel .owl-nav {
+    position: absolute;
+    top: -65px;
+    right: 5rem;
+}
+@media only screen and (max-width: 425px) {
+    .owl-collection-carousel .owl-nav {
+        right: 0;
+    }
+}
+.owl-collection-carousel .owl-nav button.owl-next,
+.owl-collection-carousel .owl-nav button.owl-prev,
+.owl-collection-carousel button.owl-dot {
+    background: 0 0;
+    background-color: #31c48d;
+    color: white !important;
+    border: none;
+    padding: 0 0.8rem 0.3rem 0.8rem !important;
+    font: inherit;
+    font-size: 17px !important;
+    border-radius: 100%;
+}
+.owl-collection-carousel .owl-nav button.owl-next:hover,
+.owl-collection-carousel .owl-nav button.owl-prev:hover {
+    background-color: #62c59d;
+}

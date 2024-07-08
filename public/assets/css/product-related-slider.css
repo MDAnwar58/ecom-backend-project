@@ -1,0 +1,24 @@
+.owl-related-product-carousel {
+    position: relative;
+}
+.owl-related-product-carousel .owl-nav {
+    position: absolute;
+    top: -65px;
+    right: 0;
+}
+.owl-related-product-carousel .owl-nav button.owl-next,
+.owl-related-product-carousel .owl-nav button.owl-prev,
+.owl-related-product-carousel button.owl-dot {
+    background: 0 0;
+    background-color: #31c48d;
+    color: white !important;
+    border: none;
+    padding: 0 0.8rem 0.3rem 0.8rem !important;
+    font: inherit;
+    font-size: 17px !important;
+    border-radius: 100%;
+}
+.owl-related-product-carousel .owl-nav button.owl-next:hover,
+.owl-related-product-carousel .owl-nav button.owl-prev:hover {
+    background-color: #62c59d;
+}

@@ -1,0 +1,74 @@
+/* navbar search box start */
+.logo {
+    display: block;
+}
+
+.search-box {
+    display: flex;
+}
+
+.search-item\:hidden {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .search-box\:hidden {
+        display: none;
+    }
+}
+
+@media (max-width: 475px) {
+    .search-box\:hidden {
+        display: none;
+    }
+
+    .search-item {
+        display: block;
+    }
+}
+
+@media (max-width: 320px) {
+    .logo\:hidden {
+        display: none;
+    }
+}
+
+/* navbar search box end */
+
+/* Browse Categories Dropdown Btn fadeIn width and height start */
+.browse-categories-dropdown-btn {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s, visibility .5s;
+    /* Add transition properties */
+    animation: BrowseCategoriesBtnfadeIn .5s forwards;
+}
+
+@keyframes BrowseCategoriesBtnfadeIn {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    25% {
+        opacity: .5;
+        visibility: visible;
+        /* Start height */
+    }
+
+    75% {
+        opacity: .9;
+        visibility: visible;
+        /* Start height */
+    }
+
+    100% {
+        opacity: 1;
+        visibility: visible;
+        /* Start height */
+    }
+
+
+}
+
+/* Browse Categories Dropdown Btn end */
