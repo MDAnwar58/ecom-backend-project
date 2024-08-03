@@ -29,8 +29,8 @@ class SignInController extends Controller
             $data = [
                 'token' => $token
             ];
-            // return Response::Out("sign in", "", $data, 200)->cookie('token', $token, 60 * 60 * 24 * 7);
-            return Response::Out("sign in", "", $data, 200);
+            return Response::Out("sign in", "", $data, 200)->cookie('token', $token, 60 * 60 * 24 * 7);
+            // return Response::Out("sign in", "", $data, 200);
         }
         return Response::Out("password_fail", "Passwords don't match!", "", 200);
     }

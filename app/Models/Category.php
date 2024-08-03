@@ -39,4 +39,13 @@ class Category extends Model
         }
         return $slug;
     }
+
+    public function sub_categories()
+    {
+        return $this->hasMany(SubCategory::class, 'category_id', 'id');
+    }
+    public function offers()
+    {
+        return $this->hasMany(Offer::class, 'category_id');
+    }
 }

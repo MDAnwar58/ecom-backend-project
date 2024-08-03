@@ -51,4 +51,29 @@ class ProductImageController extends Controller
 
         return Response::Out("success", "Image Deleted!", "", 200);
     }
+
+    public function ProductImagesShow($productId)
+    {
+        return ProductImage::where('product_id', $productId)->latest()->get();
+    }
+    public function ProductImagesStore(Request $request)
+    {
+        foreach ($request['images'] as $image) {
+            $product_image = new ProductImage();
+            $product_image->product_id = $request['productId'];
+            $product_image->image_url = $image;
+            $product_image->save();
+        }
+
+        $msg = count($request['images']) > 1 ? "images" : "image";
+
+        return Response::Out("success", "Product " . $msg . " Created!", "", 200);
+    }
+    public function ProductImageDestroy($id)
+    {
+        $product_image = ProductImage::find($id);
+        $product_image->delete();
+
+        return Response::Out("success", "Product Image Deleted!", "", 200);
+    }
 }

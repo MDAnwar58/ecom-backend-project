@@ -22,6 +22,6 @@ class OfferController extends Controller
     }
     public function offerGet(Request $request)
     {
-        return Offer::select('id', 'name', 'image_url')->where('status', 'active')->latest()->limit(5)->get();
+        return Offer::select('id', 'name', 'image_url')->where('status', 'active')->latest()->get();
     }
 }

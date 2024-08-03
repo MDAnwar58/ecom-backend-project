@@ -142,7 +142,7 @@ Route::get('/product-status/{id}', [ProductController::class, 'status']);
 Route::get('/product-edit/{id}', [ProductController::class, 'edit']);
 Route::post('/product-update/{id}', [ProductController::class, 'update']);
 Route::get('/product-delete/{id}', [ProductController::class, 'destroy']);
-Route::get('/multiple-product-delete', [ProductController::class, 'multipleDestroy']);
+Route::post('/multiple-product-delete', [ProductController::class, 'multipleDestroy']);
 
 // * product image routes as like weight routes and controller ProductImageController
 Route::get('/product-images-get', [ProductImageController::class, 'get']);
@@ -150,6 +150,10 @@ Route::post('/product-image-store', [ProductImageController::class, 'store']);
 // Route::get('/product-image-edit/{id}', [ProductImageController::class, 'edit']);
 Route::post('/product-image-update/{id}', [ProductImageController::class, 'update']);
 Route::get('/product-image-delete/{id}', [ProductImageController::class, 'destroy']);
+// * multiple images concept routes
+Route::get('/product-images-get/{productId}', [ProductImageController::class, 'ProductImagesShow']);
+Route::post('/product-images-store', [ProductImageController::class, 'ProductImagesStore']);
+Route::get('/product-images-delete/{id}', [ProductImageController::class, 'ProductImageDestroy']);
 
 Route::get('/offers-get', [OfferController::class, 'get']);
 Route::post('/offer-store', [OfferController::class, 'store']);
@@ -166,14 +170,3 @@ Route::get('/banner-status/{id}', [BannerController::class, 'status']);
 Route::get('/banner-edit/{id}', [BannerController::class, 'edit']);
 Route::post('/banner-update/{id}', [BannerController::class, 'update']);
 Route::get('/banner-delete/{id}', [BannerController::class, 'destroy']);
-
-// frontend api routes
-// // * common routes
-// Route::get('/all-category-get', [CommonController::class, 'get']);
-
-// // * home routes
-// Route::get('/banner', [\App\Http\Controllers\Frontend\BannerController::class, 'get']);
-// Route::get('/our-categories', [\App\Http\Controllers\Frontend\CategoryController::class, 'get']);
-// Route::get('/offer-banners', [\App\Http\Controllers\Frontend\OfferController::class, 'get']);
-// Route::get('/collections-get', [\App\Http\Controllers\Frontend\CollectionController::class, 'get']);
-// Route::get('/all-products-get', [\App\Http\Controllers\Frontend\ProductController::class, 'get']);

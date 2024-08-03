@@ -15,7 +15,6 @@ class CollectionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'name' => $this->name,
             'products' => ProductResource::collection($this->whenLoaded('products')),
         ];

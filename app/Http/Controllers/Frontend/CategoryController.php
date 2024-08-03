@@ -19,6 +19,6 @@ class CategoryController extends Controller
     }
     public function get()
     {
-        return Category::where('status', 'active')->select('name', 'slug', 'image_url', 'icon_image_url')->latest()->get();
+        return Category::where('status', 'active')->select('id', 'name', 'slug', 'image_url')->latest()->get();
     }
 }

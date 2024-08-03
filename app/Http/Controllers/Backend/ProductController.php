@@ -30,53 +30,248 @@ class ProductController extends Controller
     // make some functions as like get, store, status, edit, update, delete and multipleDestroy functions
     public function get(Request $request)
     {
-        $sort_by = $request->sort_by;
-        $sort_by_dir = $request->sort_by_dir;
         $status = $request->status;
-        $search = $request->search;
+        $status_value = $request->status_value;
+        $collection = $request->collection;
+        $collection_id = $request->collection_id;
+        $brand = $request->brand;
+        $brand_id = $request->brand_id;
+        $category = $request->category;
+        $category_id = $request->category_id;
+        $sub_category = $request->sub_category;
+        $sub_category_id = $request->sub_category_id;
 
-        if (isset($search) && isset($status)) {
-            if ($status === "1") {
-                $products = Product::orderBy('created_at', $sort_by)
-                    ->where('name', 'like', '%' . $search . '%')
-                    ->where('status', "publish")
-                    ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                    ->get();
-            } else {
-                $products = Product::orderBy('created_at', $sort_by)
-                    ->where('name', 'like', '%' . $search . '%')
-                    ->where('status', "unpublish")
-                    ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                    ->get();
-            }
-        } elseif (isset($search)) {
-            $products = Product::orderBy('created_at', $sort_by)
-                ->where('name', 'like', '%' . $search . '%')
-                ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                ->get();
-        } elseif (isset($status)) {
-            if ($status === "1") {
-                $products = Product::orderBy('created_at', $sort_by)
-                    ->where('status', "publish")
-                    ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                    ->get();
-            } else {
-                $products = Product::orderBy('created_at', $sort_by)
-                    ->where('status', "unpublish")
-                    ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                    ->get();
-            }
-        } elseif (isset($sort_by) && isset($sort_by_dir)) {
-            if ($sort_by_dir === "name") {
-                $products = Product::orderBy($sort_by_dir, $sort_by)
-                    ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                    ->get();
-            }
-        } else {
-            $products = Product::orderBy('created_at', $sort_by)
-                ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
-                ->get();
-        }
+        $query = Product::query()->with([
+            'collection',
+            'brand',
+            'category',
+            'sub_category',
+            'product_colors.color',
+            'product_sizes.size',
+            'product_size_numbers.size_number',
+            'product_weights.weight',
+            'product_images'
+        ]);
+
+        $query->when($request->status, function ($q) use ($request) {
+            return $q->where('status', $request->status_value === '1' ? 'publish' : 'unpublish');
+        });
+
+        $query->when($request->collection, function ($q) use ($request) {
+            return $q->where('collection_id', $request->collection_id);
+        });
+
+        $query->when($request->brand, function ($q) use ($request) {
+            return $q->where('brand_id', $request->brand_id);
+        });
+
+        $query->when($request->category, function ($q) use ($request) {
+            return $q->where('category_id', $request->category_id);
+        });
+
+        $query->when($request->sub_category, function ($q) use ($request) {
+            return $q->where('sub_category_id', $request->sub_category_id);
+        });
+
+        $products = $query->latest()->get();
+
+        // if (isset($status) && isset($collection) && isset($brand) && isset($category) && isset($sub_category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('category_id', $category_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('category_id', $category_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection) && isset($brand) && isset($category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection) && isset($brand) && isset($sub_category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection) && isset($brand)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('brand_id', $brand_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection) && isset($category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection) && isset($sub_category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($collection)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('collection_id', $collection_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('collection_id', $collection_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($brand)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('brand_id', $brand_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('brand_id', $brand_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('category_id', $category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status) && isset($sub_category)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->where('sub_category_id', $sub_category_id)
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($status)) {
+        //     if ($status_value === "1") {
+        //         $products = Product::where("status", "publish")
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     } elseif ($status_value === "2") {
+        //         $products = Product::where("status", "unpublish")
+        //             ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //             ->latest()
+        //             ->get();
+        //     }
+        // } elseif (isset($collection)) {
+        //     $products = Product::where("collection_id", $collection_id)
+        //         ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //         ->latest()
+        //         ->get();
+        // } elseif (isset($brand)) {
+        //     $products = Product::where("brand_id", $brand_id)
+        //         ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //         ->latest()
+        //         ->get();
+        // } elseif (isset($category)) {
+        //     $products = Product::where("category_id", $category_id)
+        //         ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //         ->latest()
+        //         ->get();
+        // } elseif (isset($sub_category)) {
+        //     $products = Product::where("sub_category_id", $sub_category_id)
+        //         ->with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //         ->latest()
+        //         ->get();
+        // } else {
+        //     $products = Product::with('collection', 'brand', 'category', 'sub_category', 'product_colors', 'product_colors.color', 'product_sizes', 'product_sizes.size', 'product_size_numbers', 'product_size_numbers.size_number', 'product_weights', 'product_weights.weight')
+        //         ->latest()
+        //         ->get();
+        // }
 
         $data = [
             'products' => $products,
@@ -384,15 +579,14 @@ class ProductController extends Controller
 
         return Response::Out("success", "Product Deleted!", "", 200);
     }
-    public function multipleDestroy(Request $request): JsonResponse
+    public function multipleDestroy(Request $request)
     {
-        $ids = [2, 3];
-        // $ids = $request->ids;
+        $ids = $request->ids;
         foreach ($ids as $id) {
             $product = Product::find($id);
             $product->delete();
         }
 
-        return Response::Out("success", "Product Deleted!", "", 200);
+        return Response::Out("success", "Products Deleted!", "", 200);
     }
 }

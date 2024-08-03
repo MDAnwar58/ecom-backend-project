@@ -35,4 +35,8 @@ class Brand extends Model
         }
         return $slug;
     }
+    public function offers()
+    {
+        return $this->hasMany(Offer::class, 'brand_id');
+    }
 }

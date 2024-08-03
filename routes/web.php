@@ -33,8 +33,8 @@ Route::middleware([AuthUser::class])->group(function () {
 
 
 Route::middleware(GuestUser::class)->group(function () {
-    Route::get('/sign-in', [SignInController::class, 'signInPage'])->name('sign.in');
-    Route::get('/sign-up', [SignUpController::class, 'signUpPage'])->name('sign.up');
+    // Route::get('/sign-in', [SignInController::class, 'signInPage'])->name('sign.in');
+    // Route::get('/sign-up', [SignUpController::class, 'signUpPage'])->name('sign.up');
     Route::get('/forget-password', [ForgetPasswordController::class, 'forgetPasswordPage'])->name('forget.password');
     $num = 765;
     Route::get('/reset-password/organic-chat-t-234rpp-' . $num, [ResetPasswordController::class, 'resetPasswordPage'])->name('reset.password');

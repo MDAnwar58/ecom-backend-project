@@ -77,6 +77,10 @@ class Product extends Model
     {
         return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
+    public function product_images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
     public function product_colors()
     {
         return $this->hasMany(ProductColor::class, 'product_id');
@@ -93,7 +97,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductWeight::class, "product_id");
     }
-    public function offer()
+    public function offers()
     {
         return $this->hasMany(Offer::class, "product_id");
     }
